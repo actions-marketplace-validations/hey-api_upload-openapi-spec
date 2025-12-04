@@ -1,18 +1,15 @@
 <div align="center">
-  <img width="150" height="150" src="https://heyapi.vercel.app/logo.png" alt="Logo">
+  <img alt="Hey API logo" height="150" src="https://heyapi.dev/images/logo-300w.png" width="150">
   <h1 align="center"><b>Upload OpenAPI Specification</b></h1>
-  <p align="center">A GitHub Action that uploads your OpenAPI specifications to Hey API 🚀</p>
+  <p align="center">🚀 A GitHub Action for uploading specifications to Hey API</p>
 </div>
 
-To use this action, you have to be registered with
-[Hey API](https://heyapi.vercel.app/). If you don't have an account, please
-[email us](mailto:lmenus@lmen.us) or
-[open an issue](https://github.com/hey-api/upload-openapi-spec/issues) and we
-will set you up.
+> Before using this GitHub Action, you must create a free account with
+> [Hey API](https://app.heyapi.dev/) and generate a project API key.
 
 ## Usage
 
-Create a new GitHub workflow or add an upload step to your existing workflow
+Create a new GitHub workflow or add an upload step to an existing workflow
 inside your API codebase.
 
 ```yaml
@@ -22,6 +19,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   upload-openapi-spec:
@@ -31,32 +29,53 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Upload OpenAPI spec
-        uses: hey-api/upload-openapi-spec@v1
+        uses: hey-api/upload-openapi-spec@v1.3.0
         with:
-          hey-api-token: ${{ secrets.HEY_API_TOKEN }}
-          path-to-openapi: path/to/openapi.json
+          path-to-file: path/to/openapi.json
+          tags: optional,custom,tags
+        env:
+          API_KEY: ${{ secrets.HEY_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-The example above will send your OpenAPI spec to Hey API on every push to `main`
-branch.
+The example above will upload your OpenAPI specification to Hey API on every
+pull request and push to the `main` branch.
 
 ## Inputs
 
 To successfully upload an OpenAPI specification, you need to provide the
 following inputs (see `with` in the example above)
 
-### `hey-api-token`
+### `path-to-file`
 
-This is the authorization token you obtained from us.
-
-### `path-to-openapi`
-
-A relative path to your OpenAPI spec file within the repository. Note that you
-might need an additional step in your GitHub workflow to generate this file (see
+A relative path to your OpenAPI file within the repository. Note that you might
+need an additional step in your GitHub workflow to generate this file (see
 [FastAPI example](https://fastapi.tiangolo.com/how-to/extending-openapi/#generate-the-openapi-schema)).
+
+### `tags` (optional)
+
+A comma-separated string value representing any custom tags you wish to add to
+your OpenAPI specification.
+
+## Environment Variables
+
+In addition to the required `path-to-file` input, you must provide the following
+environment variables.
+
+### `API_KEY`
+
+This is the project API key you obtained from
+[Hey API](https://app.heyapi.dev/).
+
+> Note: Personal API keys can't be used to upload specifications.
+
+### `GITHUB_TOKEN`
+
+This variable will be available inside your workflow by default. It's used to
+fetch information about your repository, i.e. default branch.
 
 ## Next Steps
 
 Please follow the
-[integrations guide](https://heyapi.vercel.app/openapi-ts/integrations.html) on
-our website for the next steps.
+[integrations guide](https://heyapi.dev/openapi-ts/integrations) on our website
+for the next steps.
